@@ -6,7 +6,10 @@ import { GlobalStyles } from "../../globals.styles";
 const App = () => {
   const [currentValue, changeCurrentValue] = useState();
 
-  const changeCurrentValue2 = (value) => changeCurrentValue(value);
+  const changeCurrentValue2 = (value) => {
+    console.log("$$$ Updated value on App state: ", value);
+    changeCurrentValue(value);
+  };
 
   return (
     <>

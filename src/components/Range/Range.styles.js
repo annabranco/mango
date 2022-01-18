@@ -16,6 +16,7 @@ export const Slider = styled.div`
   justify-content: space-between;
   border: 1px solid black;
   border-radius: 5px;
+  height: 50px;
   width: 80%;
   padding: 0;
   background: lightgray;
@@ -35,7 +36,7 @@ export const Mark = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
   color: lightgray;
-  cursor: pointer;
+  cursor: grab;
   user-select: none;
 
   ${({ currentSelection, value }) =>
@@ -43,7 +44,7 @@ export const Mark = styled.div`
     css`
       position: relative;
       background: red;
-      border-radius: 50%;
+      border-radius: 5px;
       height: 100%;
       aspect-ratio: 1/1;
       border: 1px solid black;
@@ -56,6 +57,10 @@ export const Mark = styled.div`
         bottom: -25px;
       }
     `}
+
+  &:active {
+    cursor: grabbing;
+  }
 `;
 Mark.displayName = "Mark";
 
