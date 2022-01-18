@@ -1,16 +1,22 @@
-import React from "react";
-import { string } from "prop-types";
+import React, { useState } from "react";
+import Range from "components/Range";
+import { MainArea, SelectionText } from "./App.styles";
+import { GlobalStyles } from "../../globals.styles";
 
-const App = ({ key }) => {
-  return <p>App working!</p>;
-};
+const App = () => {
+  const [currentValue, changeCurrentValue] = useState();
 
-App.propTypes = {
-  key: string,
-};
+  const changeCurrentValue2 = (value) => changeCurrentValue(value);
 
-App.defaultProps = {
-  key: undefined,
+  return (
+    <>
+      <GlobalStyles />
+      <MainArea>
+        <SelectionText>Please select a value</SelectionText>
+        <Range currentValue={currentValue} onChange={changeCurrentValue2} />
+      </MainArea>
+    </>
+  );
 };
 
 export default App;
