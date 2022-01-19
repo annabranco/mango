@@ -32,15 +32,46 @@ const Range = ({
   const listenersOn = useRefWithLabel(null, "listenersOn");
   const selectorBeingDragged = useRefWithLabel(null, "selectorBeingDragged");
 
-  const onChangeSlider = (id) => {
-    onChange(Number(id.replace("slider-mark-", "")));
+  //-- Logics for SINGLE value
+  const onClickSlider = (id) => {
+    if (type === SINGLE) {
+      onChange(Number(id.replace("slider-mark-", "")));
+    }
   };
 
+  const onMoveSlider = (event) => {
+    event.preventDefault();
+    const markId = event.target.id.replace("slider-mark-", "");
+    event.dataTransfer.effectAllowed = "none";
+
+    if (type === SINGLE && markId !== valueRef.current) {
+      valueRef.current = markId;
+      onChange(Number(markId));
+    }
+  };
+
+  //-- Logics for RANGE values
   const onChangeInput = (inputType, value) => {
     if (inputType === MIN) {
       updateEditMin(Number(value));
     } else if (inputType === MAX) {
       updateEditMax(Number(value));
+    }
+  };
+
+  const onConfirmInputChange = (inputType) => {
+    let newValue;
+
+    if (inputType === MIN) {
+      newValue = roundValue(editMin);
+      minValueRef.current = newValue;
+      changeCurrentMinValue(newValue);
+      updateEditMin(null);
+    } else if (inputType === MAX) {
+      newValue = roundValue(editMax);
+      maxValueRef.current = newValue;
+      changeCurrentMaxValue(newValue);
+      updateEditMax(null);
     }
   };
 
@@ -71,20 +102,51 @@ const Range = ({
     return valueToCheck;
   };
 
-  const onConfirmInputChange = (inputType) => {
-    let newValue;
+  // ---- Dragging events (RANGE)
+  const onDrag = (event) => {
+    const img = new Image();
 
-    if (inputType === MIN) {
-      newValue = roundValue(editMin);
-      minValueRef.current = newValue;
-      changeCurrentMinValue(newValue);
-      updateEditMin(null);
-    } else if (inputType === MAX) {
-      newValue = roundValue(editMax);
-      maxValueRef.current = newValue;
-      changeCurrentMaxValue(newValue);
-      updateEditMax(null);
+    img.src = BLANK_IMG;
+    event.dataTransfer.setDragImage(img, 0, 0);
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", event.target.dataset.selectortype);
+
+    if (!selectorBeingDragged.current) {
+      selectorBeingDragged.current = event.target.dataset.selectortype;
     }
+  };
+
+  const onDragOver = (event) => {
+    const { jump, max, min } = values;
+    const minValue = minValueRef.current || min;
+    const maxValue = maxValueRef.current || max;
+    const markValue = Number(event.target.id.replace("slider-mark-", ""));
+
+    if (!event.target.id) {
+      return;
+    }
+    event.preventDefault();
+
+    if (selectorBeingDragged.current === MIN) {
+      if (markValue < min) {
+        changeCurrentMinValue(min);
+        event.dataTransfer.effectAllowed = "none";
+      } else if (markValue >= maxValue) {
+        changeCurrentMinValue(maxValue - jump);
+        event.dataTransfer.effectAllowed = "none";
+      } else {
+        changeCurrentMinValue(markValue);
+      }
+    } else if (selectorBeingDragged.current === MAX) {
+      if (markValue > max) {
+        changeCurrentMaxValue(max);
+      } else if (markValue <= minValue) {
+        changeCurrentMaxValue(minValue + jump);
+      } else {
+        changeCurrentMaxValue(markValue);
+      }
+    }
+    // TOFIX [19-Jan-22]: Bug when slowly dragging selector over two values. See https://github.com/annabranco/mango/issues/15 (Anna Branco)
   };
 
   const onFinishDragging = (event) => {
@@ -129,73 +191,6 @@ const Range = ({
       }
     }
     selectorBeingDragged.current = null;
-  };
-
-  const onDrag = (event) => {
-    const selectorType = event.target.dataset.selectortype;
-    const img = new Image();
-
-    if (selectorType === MIN) {
-      img.src = ArrowRight;
-      event.dataTransfer.setDragImage(img, 120, 20);
-    } else if (selectorType === MAX) {
-      img.src = ArrowLeft;
-      event.dataTransfer.setDragImage(img, 0, 20);
-    } else {
-      img.src = BLANK_IMG;
-      event.dataTransfer.setDragImage(img, 0, 0);
-    }
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", event.target.dataset.selectortype);
-    if (!selectorBeingDragged.current) {
-      selectorBeingDragged.current = event.target.dataset.selectortype;
-    }
-  };
-
-  const onDragOver = (event) => {
-    const { jump, max, min } = values;
-    const minValue = minValueRef.current || min;
-    const maxValue = maxValueRef.current || max;
-    const markValue = Number(event.target.id.replace("slider-mark-", ""));
-
-    if (!event.target.id) {
-      return;
-    }
-    event.preventDefault();
-
-    if (selectorBeingDragged.current === MIN) {
-      if (markValue < min) {
-        changeCurrentMinValue(min);
-        event.dataTransfer.effectAllowed = "none";
-      } else if (markValue >= maxValue) {
-        changeCurrentMinValue(maxValue - jump);
-        event.dataTransfer.effectAllowed = "none";
-      } else {
-        changeCurrentMinValue(markValue);
-      }
-    } else if (selectorBeingDragged.current === MAX) {
-      debugger;
-      if (markValue > max) {
-        changeCurrentMaxValue(max);
-        event.dataTransfer.effectAllowed = "none";
-      } else if (markValue <= minValue) {
-        changeCurrentMaxValue(minValue + jump);
-        event.dataTransfer.effectAllowed = "none";
-      } else {
-        changeCurrentMaxValue(markValue);
-      }
-    }
-  };
-
-  const onMoveSlider = (event) => {
-    event.preventDefault();
-    const markId = event.target.id.replace("slider-mark-", "");
-    event.dataTransfer.effectAllowed = "none";
-
-    if (type === SINGLE && markId !== valueRef.current) {
-      valueRef.current = markId;
-      onChange(Number(markId));
-    }
   };
 
   useEffect(() => {
@@ -286,12 +281,12 @@ const Range = ({
               mark <= currentMaxValue
             }
             onClick={(event) =>
-              type === SINGLE ? onChangeSlider(event.currentTarget.id) : null
+              type === SINGLE ? onClickSlider(event.currentTarget.id) : null
             }
             type={type}
             value={mark}
           >
-            _
+            <span>_</span>
           </Mark>
         ))}
       </Slider>

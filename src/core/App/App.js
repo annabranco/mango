@@ -29,7 +29,7 @@ const App = () => {
           onChange={changeCurrentValue}
           type={rangeType}
           unit="€"
-          values={{ min: 1, max: 100, jump: 10 }}
+          values={{ min: 1, max: 100, jump: 1 }}
         />
       </MainArea>
     </>

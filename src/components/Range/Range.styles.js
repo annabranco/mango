@@ -20,7 +20,7 @@ export const Slider = styled.div`
   justify-content: space-between;
   border: 1px solid black;
   border-radius: 5px;
-  height: 50px;
+  height: 10px;
   width: 80%;
   padding: 0;
   background: lightgray;
@@ -38,8 +38,8 @@ export const Mark = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  height: 10px;
   width: 100%;
-  aspect-ratio: 1/1;
   color: lightgray;
   cursor: ${({ type }) => (type === SINGLE ? "grab" : "inherit")};
   user-select: none;
@@ -93,12 +93,14 @@ export const Mark = styled.div`
       position: relative;
       background-image: ${`linear-gradient(rgba(0,128,0, 0.7),rgba(0,128,0, 0.7)), url(${DraggableRight})`};
       background-size: cover;
-      border-radius: 0 20px 20px 0;
-      height: 100%;
+      border-radius: 50%;
+      height: 15px;
+      width: 25px;
       aspect-ratio: 1/1;
       border: 1px solid black;
       color: green;
       cursor: grab;
+      zoom: 2;
 
       &:after {
         ${markValue};
@@ -108,15 +110,12 @@ export const Mark = styled.div`
       }
     `}
 
-  ${({ currentMin }) =>
-    currentMin &&
-    css`
-      border-radius: 20px 0 0 20px;
-      background-image: ${`linear-gradient(rgba(0,128,0, 0.7),rgba(0,128,0, 0.7)), url(${DraggableLeft})`};
-    `}
-
   &:active {
     cursor: ${({ type }) => (type === SINGLE ? "grabbing" : "inherit")};
+  }
+
+  & > span {
+    visibility: hidden;
   }
 `;
 Mark.displayName = "Mark";
