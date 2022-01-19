@@ -1,4 +1,6 @@
 import styled, { css } from "styled-components";
+import DraggableLeft from "assets/images/draggable-left.jpg";
+import DraggableRight from "assets/images/draggable-right.jpg";
 
 export const RangeArea = styled.div`
   display: flex;
@@ -30,6 +32,7 @@ const markValue = css`
 
 export const Mark = styled.div`
   display: flex;
+  position: relative;
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -38,6 +41,14 @@ export const Mark = styled.div`
   color: lightgray;
   cursor: grab;
   user-select: none;
+
+  &:after {
+    ${markValue};
+    position: absolute;
+    bottom: 4px;
+    color: gray;
+    font-size: 0.7rem;
+  }
 
   ${({ currentSelection, value }) =>
     currentSelection &&
@@ -56,6 +67,49 @@ export const Mark = styled.div`
         position: absolute;
         bottom: -25px;
       }
+    `}
+
+  ${({ inRange }) =>
+    inRange &&
+    css`
+      position: relative;
+      background: green;
+      height: 100%;
+      color: green;
+
+      &:after {
+        ${markValue};
+        position: absolute;
+        bottom: -25px;
+      }
+    `}
+
+  ${({ currentMax, currentMin }) =>
+    (currentMax || currentMin) &&
+    css`
+      z-index: 10;
+      position: relative;
+      background-image: ${`linear-gradient(rgba(0,128,0, 0.7),rgba(0,128,0, 0.7)), url(${DraggableRight})`};
+      background-size: cover;
+      border-radius: 0 20px 20px 0;
+      height: 100%;
+      aspect-ratio: 1/1;
+      border: 1px solid black;
+      color: green;
+
+      &:after {
+        ${markValue};
+        font-size: 1.5rem;
+        position: absolute;
+        bottom: -40px;
+      }
+    `}
+
+  ${({ currentMin }) =>
+    currentMin &&
+    css`
+      border-radius: 20px 0 0 20px;
+      background-image: ${`linear-gradient(rgba(0,128,0, 0.7),rgba(0,128,0, 0.7)), url(${DraggableLeft})`};
     `}
 
   &:active {

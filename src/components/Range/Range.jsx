@@ -1,11 +1,26 @@
 import React, { useEffect, useState, useRef } from "react";
-import { func, number, shape } from "prop-types";
+import { func, number, oneOf, shape } from "prop-types";
+import ArrowLeft from "assets/images/arrow-left.png";
+import ArrowRight from "assets/images/arrow-right.png";
+import { RANGE, SINGLE } from "../../constants";
+
 import { Mark, MarkLabel, RangeArea, Slider } from "./Range.styles";
 
-const Range = ({ currentValue, onChange, values }) => {
+const Range = ({
+  changeCurrentMaxValue,
+  changeCurrentMinValue,
+  currentMaxValue,
+  currentMinValue,
+  currentValue,
+  onChange,
+  type,
+  values,
+}) => {
   const [selectionMarks, updateSelectionMarks] = useState([]);
 
   const valueRef = useRef();
+  const minValueRef = useRef();
+  const maxValueRef = useRef();
   const listenersOn = useRef();
 
   const onChangeSlider = (id) => {
@@ -15,23 +30,58 @@ const Range = ({ currentValue, onChange, values }) => {
   const onSelectNewValue = (event) => {
     event.preventDefault();
     const markId = event.target.id.replace("slider-mark-", "");
+    const selectorType = event.dataTransfer.getData("text");
+    console.log("$$$ selectorType", selectorType);
 
-    if (markId !== valueRef.current) {
+    if (!selectorType && markId !== valueRef.current) {
       console.log("$$$ onSelectNewValue target", event.target);
       valueRef.current = markId;
       onChange(Number(markId));
     }
+    if (selectorType === "min" && markId !== minValueRef.current) {
+      console.log("$$$ onSelectNewValue target", event.target);
+      minValueRef.current = markId;
+      changeCurrentMinValue(Number(markId));
+    }
+    if (selectorType === "max" && markId !== maxValueRef.current) {
+      console.log("$$$ onSelectNewValue target", event.target);
+      maxValueRef.current = markId;
+      changeCurrentMaxValue(Number(markId));
+    }
   };
 
   const onDrag = (event) => {
+    const selectorType = event.target.dataset.selectortype;
     const img = new Image();
-    img.src =
-      "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
-    event.dataTransfer.setDragImage(img, 0, 0);
+
+    if (selectorType === "min") {
+      img.src = ArrowRight;
+      event.dataTransfer.setDragImage(img, 120, 20);
+    } else if (selectorType === "max") {
+      img.src = ArrowLeft;
+      event.dataTransfer.setDragImage(img, 0, 20);
+    } else {
+      img.src =
+        "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+      event.dataTransfer.setDragImage(img, 0, 0);
+    }
     event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", event.target.dataset.selectortype);
+    console.log(
+      "$$$ event.target.dataset.selectortype",
+      event.target.dataset.selectortype
+    );
+    console.log(
+      "$$$ onDrag dataTransfer.getData",
+      event.dataTransfer.getData("text")
+    );
   };
 
   const onMoveSlider = (event) => {
+    console.log(
+      "$$$ onMoveSlider dataTransfer.getData",
+      event.dataTransfer.getData("text")
+    );
     event.preventDefault();
     const markId = event.target.id.replace("slider-mark-", "");
     event.dataTransfer.effectAllowed = "none";
@@ -78,17 +128,39 @@ const Range = ({ currentValue, onChange, values }) => {
     };
   }, []);
 
+  const getSelectorType = (value) => {
+    if (type === RANGE) {
+      if (value === currentMaxValue) {
+        return "max";
+      }
+      if (value === currentMinValue) {
+        return "min";
+      }
+    }
+    return null;
+  };
+
   return (
     <RangeArea>
       <MarkLabel>{values.min}</MarkLabel>
       <Slider>
         {selectionMarks.map((mark) => (
           <Mark
-            currentSelection={mark === currentValue}
+            currentMax={type === RANGE && mark === currentMaxValue}
+            currentMin={type === RANGE && mark === currentMinValue}
+            currentSelection={type === SINGLE && mark === currentValue}
             draggable="true"
             key={`mark-${mark}`}
             id={`slider-mark-${mark}`}
-            onClick={(event) => onChangeSlider(event.currentTarget.id)}
+            data-selectortype={getSelectorType(mark)}
+            inRange={
+              type === RANGE &&
+              mark >= currentMinValue &&
+              mark <= currentMaxValue
+            }
+            onClick={(event) =>
+              type === SINGLE ? onChangeSlider(event.currentTarget.id) : null
+            }
             value={mark}
           >
             _
@@ -101,8 +173,13 @@ const Range = ({ currentValue, onChange, values }) => {
 };
 
 Range.propTypes = {
+  changeCurrentMaxValue: func.isRequired,
+  changeCurrentMinValue: func.isRequired,
+  currentMaxValue: number,
+  currentMinValue: number,
   currentValue: number,
   onChange: func.isRequired,
+  type: oneOf([RANGE, SINGLE]),
   values: shape({
     min: number,
     max: number,
@@ -111,7 +188,10 @@ Range.propTypes = {
 };
 
 Range.defaultProps = {
+  currentMaxValue: 100,
+  currentMinValue: 1,
   currentValue: 0,
+  type: SINGLE,
   values: { min: 1, max: 100, jump: 10 },
 };
 
