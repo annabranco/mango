@@ -1,8 +1,10 @@
 import styled, { css } from "styled-components";
 import DraggableLeft from "assets/images/draggable-left.jpg";
 import DraggableRight from "assets/images/draggable-right.jpg";
+import { MAX, SINGLE } from "../../constants";
 
 export const RangeArea = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -27,7 +29,7 @@ export const Slider = styled.div`
 Slider.displayName = "Slider";
 
 const markValue = css`
-  content: "${({ value }) => value}";
+  content: "${({ displayMarks, value }) => (displayMarks ? value : null)}";
 `;
 
 export const Mark = styled.div`
@@ -39,7 +41,7 @@ export const Mark = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
   color: lightgray;
-  cursor: grab;
+  cursor: ${({ type }) => (type === SINGLE ? "grab" : "inherit")};
   user-select: none;
 
   &:after {
@@ -96,6 +98,7 @@ export const Mark = styled.div`
       aspect-ratio: 1/1;
       border: 1px solid black;
       color: green;
+      cursor: grab;
 
       &:after {
         ${markValue};
@@ -113,13 +116,30 @@ export const Mark = styled.div`
     `}
 
   &:active {
-    cursor: grabbing;
+    cursor: ${({ type }) => (type === SINGLE ? "grabbing" : "inherit")};
   }
 `;
 Mark.displayName = "Mark";
 
 export const MarkLabel = styled.label`
   margin: 0 10px;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
+  width: 60px;
+  text-align: right;
+
+  ${({ type }) =>
+    type === MAX &&
+    css`
+      text-align: left;
+    `}
 `;
 MarkLabel.displayName = "MarkLabel";
+
+export const MarkInput = styled.input`
+  position: relative;
+  margin: 0 10px;
+  font-size: 1.2rem;
+  border: 0;
+  width: 60px;
+`;
+MarkInput.displayName = "MarkInput";

@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import { func, number, oneOf, shape } from "prop-types";
+import React, { useEffect } from "react";
+import { bool, func, number, oneOf, shape, string } from "prop-types";
 import ArrowLeft from "assets/images/arrow-left.png";
 import ArrowRight from "assets/images/arrow-right.png";
-import { RANGE, SINGLE } from "../../constants";
+import { BLANK_IMG, MAX, MIN, RANGE, SINGLE } from "../../constants";
 
-import { Mark, MarkLabel, RangeArea, Slider } from "./Range.styles";
+import { Mark, MarkInput, MarkLabel, RangeArea, Slider } from "./Range.styles";
+import { useRefWithLabel, useStateWithLabel } from "../../utils/hooks";
 
 const Range = ({
   changeCurrentMaxValue,
@@ -12,81 +13,186 @@ const Range = ({
   currentMaxValue,
   currentMinValue,
   currentValue,
+  displayMarks,
   onChange,
   type,
+  unit,
   values,
 }) => {
-  const [selectionMarks, updateSelectionMarks] = useState([]);
+  const [selectionMarks, updateSelectionMarks] = useStateWithLabel(
+    [],
+    "selectionMarks"
+  );
+  const [editMin, updateEditMin] = useStateWithLabel(null, "editMin");
+  const [editMax, updateEditMax] = useStateWithLabel(null, "editMax");
 
-  const valueRef = useRef();
-  const minValueRef = useRef();
-  const maxValueRef = useRef();
-  const listenersOn = useRef();
+  const valueRef = useRefWithLabel(null, "valueRef");
+  const minValueRef = useRefWithLabel(values.min, "minValueRef");
+  const maxValueRef = useRefWithLabel(values.max, "maxValueRef");
+  const listenersOn = useRefWithLabel(null, "listenersOn");
+  const selectorBeingDragged = useRefWithLabel(null, "selectorBeingDragged");
 
   const onChangeSlider = (id) => {
     onChange(Number(id.replace("slider-mark-", "")));
   };
 
-  const onSelectNewValue = (event) => {
-    event.preventDefault();
-    const markId = event.target.id.replace("slider-mark-", "");
-    const selectorType = event.dataTransfer.getData("text");
-    console.log("$$$ selectorType", selectorType);
+  const onChangeInput = (inputType, value) => {
+    if (inputType === MIN) {
+      updateEditMin(Number(value));
+    } else if (inputType === MAX) {
+      updateEditMax(Number(value));
+    }
+  };
 
-    if (!selectorType && markId !== valueRef.current) {
-      console.log("$$$ onSelectNewValue target", event.target);
+  const roundValue = (valueToCheck) => {
+    const { jump, max, min } = values;
+    const minValue = minValueRef.current || min;
+    const maxValue = maxValueRef.current || max;
+
+    if (valueToCheck >= maxValue) {
+      if (inputType === MIN) {
+        return maxValue - jump;
+      }
+      return maxValue;
+    }
+    if (valueToCheck < minValue) {
+      if (inputType === MAX) {
+        return minValue + jump;
+      }
+      return minValue;
+    }
+    if (valueToCheck % jump !== 0) {
+      const correctedValue = valueToCheck - (valueToCheck % jump);
+      if (correctedValue < min) {
+        return min;
+      }
+      return correctedValue;
+    }
+    return valueToCheck;
+  };
+
+  const onConfirmInputChange = (inputType) => {
+    let newValue;
+
+    if (inputType === MIN) {
+      newValue = roundValue(editMin);
+      minValueRef.current = newValue;
+      changeCurrentMinValue(newValue);
+      updateEditMin(null);
+    } else if (inputType === MAX) {
+      newValue = roundValue(editMax);
+      maxValueRef.current = newValue;
+      changeCurrentMaxValue(newValue);
+      updateEditMax(null);
+    }
+  };
+
+  const onFinishDragging = (event) => {
+    const selectorType = event.dataTransfer.getData("text");
+    const { min, jump } = values;
+    let markId = Number(event.target.id.replace("slider-mark-", ""));
+
+    event.preventDefault();
+
+    if (!event.target.id) {
+      return;
+    }
+
+    if (markId === 0 && min > 0) {
+      markId = min;
+    }
+
+    if (type === SINGLE && !selectorType && markId !== valueRef.current) {
       valueRef.current = markId;
-      onChange(Number(markId));
+      onChange(markId);
     }
-    if (selectorType === "min" && markId !== minValueRef.current) {
-      console.log("$$$ onSelectNewValue target", event.target);
-      minValueRef.current = markId;
-      changeCurrentMinValue(Number(markId));
+
+    if (selectorType === MIN && markId !== minValueRef.current) {
+      if (markId >= maxValueRef.current) {
+        const maxAllowed = maxValueRef.current - jump;
+        minValueRef.current = maxAllowed;
+        changeCurrentMinValue(maxAllowed);
+      } else {
+        minValueRef.current = markId;
+        changeCurrentMinValue(markId);
+      }
     }
-    if (selectorType === "max" && markId !== maxValueRef.current) {
-      console.log("$$$ onSelectNewValue target", event.target);
-      maxValueRef.current = markId;
-      changeCurrentMaxValue(Number(markId));
+
+    if (selectorType === MAX && markId !== maxValueRef.current) {
+      if (markId <= minValueRef.current) {
+        const minAllowed = minValueRef.current + jump;
+        maxValueRef.current = minAllowed;
+        changeCurrentMaxValue(minAllowed);
+      } else {
+        maxValueRef.current = Number(markId);
+        changeCurrentMaxValue(Number(markId));
+      }
     }
+    selectorBeingDragged.current = null;
   };
 
   const onDrag = (event) => {
     const selectorType = event.target.dataset.selectortype;
     const img = new Image();
 
-    if (selectorType === "min") {
+    if (selectorType === MIN) {
       img.src = ArrowRight;
       event.dataTransfer.setDragImage(img, 120, 20);
-    } else if (selectorType === "max") {
+    } else if (selectorType === MAX) {
       img.src = ArrowLeft;
       event.dataTransfer.setDragImage(img, 0, 20);
     } else {
-      img.src =
-        "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+      img.src = BLANK_IMG;
       event.dataTransfer.setDragImage(img, 0, 0);
     }
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", event.target.dataset.selectortype);
-    console.log(
-      "$$$ event.target.dataset.selectortype",
-      event.target.dataset.selectortype
-    );
-    console.log(
-      "$$$ onDrag dataTransfer.getData",
-      event.dataTransfer.getData("text")
-    );
+    if (!selectorBeingDragged.current) {
+      selectorBeingDragged.current = event.target.dataset.selectortype;
+    }
+  };
+
+  const onDragOver = (event) => {
+    const { jump, max, min } = values;
+    const minValue = minValueRef.current || min;
+    const maxValue = maxValueRef.current || max;
+    const markValue = Number(event.target.id.replace("slider-mark-", ""));
+
+    if (!event.target.id) {
+      return;
+    }
+    event.preventDefault();
+
+    if (selectorBeingDragged.current === MIN) {
+      if (markValue < min) {
+        changeCurrentMinValue(min);
+        event.dataTransfer.effectAllowed = "none";
+      } else if (markValue >= maxValue) {
+        changeCurrentMinValue(maxValue - jump);
+        event.dataTransfer.effectAllowed = "none";
+      } else {
+        changeCurrentMinValue(markValue);
+      }
+    } else if (selectorBeingDragged.current === MAX) {
+      debugger;
+      if (markValue > max) {
+        changeCurrentMaxValue(max);
+        event.dataTransfer.effectAllowed = "none";
+      } else if (markValue <= minValue) {
+        changeCurrentMaxValue(minValue + jump);
+        event.dataTransfer.effectAllowed = "none";
+      } else {
+        changeCurrentMaxValue(markValue);
+      }
+    }
   };
 
   const onMoveSlider = (event) => {
-    console.log(
-      "$$$ onMoveSlider dataTransfer.getData",
-      event.dataTransfer.getData("text")
-    );
     event.preventDefault();
     const markId = event.target.id.replace("slider-mark-", "");
     event.dataTransfer.effectAllowed = "none";
 
-    if (markId !== valueRef.current) {
+    if (type === SINGLE && markId !== valueRef.current) {
       valueRef.current = markId;
       onChange(Number(markId));
     }
@@ -105,36 +211,35 @@ const Range = ({
       }
       updatedMarks.push(max);
       updateSelectionMarks(updatedMarks);
-      onChange(min);
+      if (type === SINGLE) {
+        onChange(min);
+      }
+
       if (!listenersOn.current) {
         document.addEventListener("drag", onDrag, false);
         document.addEventListener("dragstart", onDrag, false);
-        document.addEventListener("drop", onSelectNewValue, false);
+        document.addEventListener("drop", onFinishDragging, false);
         document.addEventListener("dragover", onMoveSlider, false);
-        // document.addEventListener("dragend", test, false);
-        // document.addEventListener("dragenter", test, false);
-        // document.addEventListener("dragleave", test, false);
+        document.addEventListener("dragenter", onDragOver, false);
         listenersOn.current = true;
       }
     }
     return () => {
       document.removeEventListener("drag", onDrag, false);
       document.removeEventListener("dragstart", onDrag, false);
-      document.removeEventListener("drop", onSelectNewValue, false);
+      document.removeEventListener("drop", onFinishDragging, false);
       document.removeEventListener("dragover", onMoveSlider, false);
-      // document.removeEventListener("dragend", test, false);
-      // document.removeEventListener("dragenter", test, false);
-      // document.removeEventListener("dragleave", test, false);
+      document.removeEventListener("dragenter", onDragOver, false);
     };
   }, []);
 
   const getSelectorType = (value) => {
     if (type === RANGE) {
       if (value === currentMaxValue) {
-        return "max";
+        return MAX;
       }
       if (value === currentMinValue) {
-        return "min";
+        return MIN;
       }
     }
     return null;
@@ -142,13 +247,35 @@ const Range = ({
 
   return (
     <RangeArea>
-      <MarkLabel>{values.min}</MarkLabel>
+      {editMin ? (
+        <MarkInput
+          autoFocus
+          defaultValue={editMin}
+          min={0}
+          max={maxValueRef.current || currentMaxValue}
+          onBlur={() => onConfirmInputChange(MIN)}
+          onChange={(event) => onChangeInput(MIN, event.target.value)}
+          step={values.jump}
+          list={selectionMarks}
+          type="number"
+        />
+      ) : (
+        <MarkLabel
+          onClick={() => updateEditMin(minValueRef.current || currentMinValue)}
+          type={MIN}
+        >
+          {type === RANGE && currentMinValue
+            ? `${currentMinValue}${unit || ""}`
+            : `${values.min}${unit || ""}`}
+        </MarkLabel>
+      )}
       <Slider>
         {selectionMarks.map((mark) => (
           <Mark
             currentMax={type === RANGE && mark === currentMaxValue}
             currentMin={type === RANGE && mark === currentMinValue}
             currentSelection={type === SINGLE && mark === currentValue}
+            displayMarks={displayMarks}
             draggable="true"
             key={`mark-${mark}`}
             id={`slider-mark-${mark}`}
@@ -161,13 +288,36 @@ const Range = ({
             onClick={(event) =>
               type === SINGLE ? onChangeSlider(event.currentTarget.id) : null
             }
+            type={type}
             value={mark}
           >
             _
           </Mark>
         ))}
       </Slider>
-      <MarkLabel>{values.max}</MarkLabel>
+      {editMax ? (
+        <MarkInput
+          autoFocus
+          defaultValue={editMax}
+          min={
+            minValueRef.current + values.jump || currentMinValue + values.jump
+          }
+          max={values.max}
+          onBlur={() => onConfirmInputChange(MAX)}
+          onChange={(event) => onChangeInput(MAX, event.target.value)}
+          step={values.jump}
+          type="number"
+        />
+      ) : (
+        <MarkLabel
+          onClick={() => updateEditMax(maxValueRef.current || currentMaxValue)}
+          type={MAX}
+        >
+          {type === RANGE && currentMaxValue
+            ? `${currentMaxValue}${unit || ""}`
+            : `${values.max}${unit || ""}`}
+        </MarkLabel>
+      )}
     </RangeArea>
   );
 };
@@ -178,8 +328,10 @@ Range.propTypes = {
   currentMaxValue: number,
   currentMinValue: number,
   currentValue: number,
+  displayMarks: bool,
   onChange: func.isRequired,
   type: oneOf([RANGE, SINGLE]),
+  unit: string,
   values: shape({
     min: number,
     max: number,
@@ -191,7 +343,9 @@ Range.defaultProps = {
   currentMaxValue: 100,
   currentMinValue: 1,
   currentValue: 0,
+  displayMarks: true,
   type: SINGLE,
+  unit: null,
   values: { min: 1, max: 100, jump: 10 },
 };
 

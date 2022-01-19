@@ -10,11 +10,6 @@ const App = () => {
   const [currentMaxValue, changeCurrentMaxValue] = useState();
   const [rangeType, changeRangeType] = useState(RANGE);
 
-  const changeCurrentValue2 = (value) => {
-    console.log("$$$ Updated value on App state: ", value);
-    changeCurrentValue(value);
-  };
-
   return (
     <>
       <GlobalStyles />
@@ -30,8 +25,11 @@ const App = () => {
           currentMaxValue={currentMaxValue}
           currentMinValue={currentMinValue}
           currentValue={currentValue}
-          onChange={changeCurrentValue2}
+          displayMarks={false}
+          onChange={changeCurrentValue}
           type={rangeType}
+          unit="€"
+          values={{ min: 1, max: 100, jump: 10 }}
         />
       </MainArea>
     </>
