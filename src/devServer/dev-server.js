@@ -41,32 +41,35 @@ app.get("/health", async (req, res) => {
 });
 
 //--- Regular calls
-app.get("/normal-range", async (req, res, next) => {
-  fs.readFile(dbPath + "normal-response.json", "utf8", (error, jsonFile) => {
-    if (error) {
-      handleUnknownError(error, req, res, next);
-    } else {
-      const feedbackMessage = `JSON file "normal-response" sent to host.`;
-      res
-        .setHeader("Content-Type", "application/json")
-        .status(200)
-        .json({
-          success: true,
-          data: JSON.parse(jsonFile),
-        });
-      console.debug(`[SUCCESS] ${feedbackMessage} ${new Date()}`);
+
+const handleCorrectRequest = (req, res, next, requestType) => {
+  fs.readFile(
+    `${dbPath}${requestType}-response.json`,
+    "utf8",
+    (error, jsonFile) => {
+      if (error) {
+        handleUnknownError(error, req, res, next);
+      } else {
+        const feedbackMessage = `JSON file "${requestType}-response" sent to host.`;
+        res
+          .setHeader("Content-Type", "application/json")
+          .status(200)
+          .json({
+            success: true,
+            data: JSON.parse(jsonFile),
+          });
+        console.debug(`[SUCCESS] ${feedbackMessage} ${new Date()}`);
+      }
     }
-  });
+  );
+};
+
+app.get("/normal-range", async (req, res, next) => {
+  handleCorrectRequest(req, res, next, "normal");
 });
 
-app.get("/fixed-range", async (req, res) => {
-  res.status(501).json({
-    success: false,
-    error_code: 501,
-  });
-  console.debug(
-    `[INFO] The requested endpoint has not yet been implemented. ${new Date()}`
-  );
+app.get("/fixed-range", async (req, res, next) => {
+  handleCorrectRequest(req, res, next, "fixed");
 });
 
 //--- Other endpoints
