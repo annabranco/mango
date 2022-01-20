@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Range from "components/Range";
 import { MainArea, SelectionText } from "./App.styles";
 import { GlobalStyles } from "../../globals.styles";
 import { RANGE, SINGLE } from "../../constants";
+import { fetchData } from "../../utils/fetchData";
+import { useStateWithLabel } from "../../utils/hooks";
+
+const DB_URI = "http://localhost:3051";
+const dataType = "normal-range";
 
 const App = () => {
-  const [currentValue, changeCurrentValue] = useState();
-  const [currentMinValue, changeCurrentMinValue] = useState();
-  const [currentMaxValue, changeCurrentMaxValue] = useState();
-  const [rangeType, changeRangeType] = useState(RANGE);
+  const [currentValue, changeCurrentValue] = useStateWithLabel(
+    null,
+    "currentValue"
+  );
+  const [currentMinValue, changeCurrentMinValue] = useStateWithLabel(
+    null,
+    "currentMinValue"
+  );
+  const [currentMaxValue, changeCurrentMaxValue] = useStateWithLabel(
+    null,
+    "currentMaxValue"
+  );
+  const [rangeValues, updateRangeValues] = useStateWithLabel(
+    undefined,
+    "rangeValues"
+  );
+  const [rangeType, changeRangeType] = useStateWithLabel(RANGE, "rangeType");
+
+  useEffect(() => {
+    fetchData(`${DB_URI}/${dataType}`).then((response) => {
+      if (response.success) {
+        updateRangeValues(response.data);
+      } else {
+        console.error("Error when fetching data", response);
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -29,7 +57,7 @@ const App = () => {
           onChange={changeCurrentValue}
           type={rangeType}
           unit="€"
-          values={{ min: 1, max: 100, jump: 1 }}
+          values={rangeValues}
         />
       </MainArea>
     </>

@@ -51,6 +51,18 @@ const Range = ({
   };
 
   //-- Logics for RANGE values
+  const getSelectorType = (value) => {
+    if (type === RANGE) {
+      if (value === currentMaxValue) {
+        return MAX;
+      }
+      if (value === currentMinValue) {
+        return MIN;
+      }
+    }
+    return null;
+  };
+
   const onChangeInput = (inputType, value) => {
     if (inputType === MIN) {
       updateEditMin(Number(value));
@@ -63,19 +75,19 @@ const Range = ({
     let newValue;
 
     if (inputType === MIN) {
-      newValue = roundValue(editMin);
+      newValue = roundValue(editMin, inputType);
       minValueRef.current = newValue;
       changeCurrentMinValue(newValue);
       updateEditMin(null);
     } else if (inputType === MAX) {
-      newValue = roundValue(editMax);
+      newValue = roundValue(editMax, inputType);
       maxValueRef.current = newValue;
       changeCurrentMaxValue(newValue);
       updateEditMax(null);
     }
   };
 
-  const roundValue = (valueToCheck) => {
+  const roundValue = (valueToCheck, inputType) => {
     const { jump, max, min } = values;
     const minValue = minValueRef.current || min;
     const maxValue = maxValueRef.current || max;
@@ -103,6 +115,23 @@ const Range = ({
   };
 
   // ---- Dragging events (RANGE)
+  const addListeners = () => {
+    document.addEventListener("drag", onDrag, false);
+    document.addEventListener("dragstart", onDrag, false);
+    document.addEventListener("drop", onFinishDragging, false);
+    document.addEventListener("dragover", onMoveSlider, false);
+    document.addEventListener("dragenter", onDragOver, false);
+    listenersOn.current = true;
+  };
+  const removeListeners = () => {
+    document.removeEventListener("drag", onDrag, false);
+    document.removeEventListener("dragstart", onDrag, false);
+    document.removeEventListener("drop", onFinishDragging, false);
+    document.removeEventListener("dragover", onMoveSlider, false);
+    document.removeEventListener("dragenter", onDragOver, false);
+    listenersOn.current = false;
+  };
+
   const onDrag = (event) => {
     const img = new Image();
 
@@ -195,6 +224,7 @@ const Range = ({
 
   useEffect(() => {
     const { min, max, jump } = values;
+
     if (min && max && jump) {
       const updatedMarks = [];
 
@@ -206,39 +236,26 @@ const Range = ({
       }
       updatedMarks.push(max);
       updateSelectionMarks(updatedMarks);
+      changeCurrentMaxValue(max);
+      changeCurrentMinValue(min);
       if (type === SINGLE) {
         onChange(min);
       }
 
       if (!listenersOn.current) {
-        document.addEventListener("drag", onDrag, false);
-        document.addEventListener("dragstart", onDrag, false);
-        document.addEventListener("drop", onFinishDragging, false);
-        document.addEventListener("dragover", onMoveSlider, false);
-        document.addEventListener("dragenter", onDragOver, false);
-        listenersOn.current = true;
+        addListeners();
+      } else {
+        removeListeners();
+        addListeners();
       }
     }
+  }, [values]);
+
+  useEffect(() => {
     return () => {
-      document.removeEventListener("drag", onDrag, false);
-      document.removeEventListener("dragstart", onDrag, false);
-      document.removeEventListener("drop", onFinishDragging, false);
-      document.removeEventListener("dragover", onMoveSlider, false);
-      document.removeEventListener("dragenter", onDragOver, false);
+      removeListeners();
     };
   }, []);
-
-  const getSelectorType = (value) => {
-    if (type === RANGE) {
-      if (value === currentMaxValue) {
-        return MAX;
-      }
-      if (value === currentMinValue) {
-        return MIN;
-      }
-    }
-    return null;
-  };
 
   return (
     <RangeArea>
