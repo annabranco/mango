@@ -3,22 +3,22 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import SETUP from "config/setup.js";
 import { useStateWithLabel } from "utils/hooks";
 import Home from "views/Home/Home";
-import NormalRange from "views/NormalRange/NormalRange";
+import RangeView from "views/RangeView/RangeView";
 import { RANGE } from "constants";
 import { MainArea } from "./App.styles";
 import { GlobalStyles } from "globals.styles";
 
 const App = () => {
   const [currentValue, changeCurrentValue] = useStateWithLabel(
-    null,
+    undefined,
     "currentValue"
   );
   const [currentMinValue, changeCurrentMinValue] = useStateWithLabel(
-    null,
+    undefined,
     "currentMinValue"
   );
   const [currentMaxValue, changeCurrentMaxValue] = useStateWithLabel(
-    null,
+    undefined,
     "currentMaxValue"
   );
 
@@ -34,7 +34,7 @@ const App = () => {
               exact
               path="/exercise1"
               element={
-                <NormalRange
+                <RangeView
                   changeCurrentMaxValue={changeCurrentMaxValue}
                   changeCurrentMinValue={changeCurrentMinValue}
                   currentMaxValue={currentMaxValue}
@@ -42,7 +42,23 @@ const App = () => {
                   currentValue={currentValue}
                   displayMarks={false}
                   onChange={changeCurrentValue}
-                  rangeType={rangeType}
+                  type={rangeType}
+                  unit={SETUP.numberUnit}
+                />
+              }
+            />
+            <Route
+              exact
+              path="/exercise2"
+              element={
+                <RangeView
+                  changeCurrentMaxValue={changeCurrentMaxValue}
+                  changeCurrentMinValue={changeCurrentMinValue}
+                  currentMaxValue={currentMaxValue}
+                  currentMinValue={currentMinValue}
+                  currentValue={currentValue}
+                  displayMarks={true}
+                  onChange={changeCurrentValue}
                   type={rangeType}
                   unit={SETUP.numberUnit}
                 />

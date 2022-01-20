@@ -142,10 +142,17 @@ const Range = ({
     }
   };
 
+  const getPreviousValue = (comparedValue, fixedArray) =>
+    fixedArray[fixedArray.findIndex((value) => value === comparedValue) - 1];
+
+  const getNextValue = (comparedValue, fixedArray) =>
+    fixedArray[fixedArray.findIndex((value) => value === comparedValue) + 1];
+
   const onDragOver = (event) => {
-    const { jump, max, min } = values;
-    const minValue = minValueRef.current || min;
-    const maxValue = maxValueRef.current || max;
+    const { jump, max, min, fixed } = values;
+    const minValue = minValueRef.current || (fixed ? fixed[0] : min);
+    const maxValue =
+      maxValueRef.current || (fixed ? fixed[fixed.length - 1] : max);
     const markValue = Number(event.target.id.replace("slider-mark-", ""));
 
     if (!event.target.id) {
@@ -153,31 +160,51 @@ const Range = ({
     }
     event.preventDefault();
 
-    if (selectorBeingDragged.current === MIN) {
-      if (markValue < min) {
-        changeCurrentMinValue(min);
-        event.dataTransfer.effectAllowed = "none";
-      } else if (markValue >= maxValue) {
-        changeCurrentMinValue(maxValue - jump);
-        event.dataTransfer.effectAllowed = "none";
-      } else {
-        changeCurrentMinValue(markValue);
+    if (fixed) {
+      const minFixedValue = fixed[0];
+      const maxFixedValue = fixed[fixed.length - 1];
+
+      if (selectorBeingDragged.current === MIN) {
+        if (markValue < minFixedValue) {
+          changeCurrentMinValue(minFixedValue);
+        } else if (markValue >= maxValue) {
+          changeCurrentMinValue(getPreviousValue(maxValue, fixed));
+        } else {
+          changeCurrentMinValue(markValue);
+        }
+      } else if (selectorBeingDragged.current === MAX) {
+        if (markValue > maxFixedValue) {
+          changeCurrentMaxValue(maxFixedValue);
+        } else if (markValue <= minValue) {
+          changeCurrentMaxValue(getNextValue(minValue, fixed));
+        } else {
+          changeCurrentMaxValue(markValue);
+        }
       }
-    } else if (selectorBeingDragged.current === MAX) {
-      if (markValue > max) {
-        changeCurrentMaxValue(max);
-      } else if (markValue <= minValue) {
-        changeCurrentMaxValue(minValue + jump);
-      } else {
-        changeCurrentMaxValue(markValue);
+    } else {
+      if (selectorBeingDragged.current === MIN) {
+        if (markValue < min) {
+          changeCurrentMinValue(min);
+        } else if (markValue >= maxValue) {
+          changeCurrentMinValue(maxValue - jump);
+        } else {
+          changeCurrentMinValue(markValue);
+        }
+      } else if (selectorBeingDragged.current === MAX) {
+        if (markValue > max) {
+          changeCurrentMaxValue(max);
+        } else if (markValue <= minValue) {
+          changeCurrentMaxValue(minValue + jump);
+        } else {
+          changeCurrentMaxValue(markValue);
+        }
       }
     }
-    // TOFIX [19-Jan-22]: Bug when slowly dragging selector over two values. See https://github.com/annabranco/mango/issues/15 (Anna Branco)
   };
 
   const onFinishDragging = (event) => {
     const selectorType = event.dataTransfer.getData("text");
-    const { min, jump } = values;
+    const { min, jump, fixed } = values;
     let markId = Number(event.target.id.replace("slider-mark-", ""));
 
     event.preventDefault();
@@ -186,43 +213,88 @@ const Range = ({
       return;
     }
 
-    if (markId === 0 && min > 0) {
-      markId = min;
-    }
+    if (fixed) {
+      const minFixedValue = fixed[0];
 
-    if (type === SINGLE && !selectorType && markId !== valueRef.current) {
-      valueRef.current = markId;
-      onChange(markId);
-    }
-
-    if (selectorType === MIN && markId !== minValueRef.current) {
-      if (markId >= maxValueRef.current) {
-        const maxAllowed = maxValueRef.current - jump;
-        minValueRef.current = maxAllowed;
-        changeCurrentMinValue(maxAllowed);
-      } else {
-        minValueRef.current = markId;
-        changeCurrentMinValue(markId);
+      if (markId === 0 && minFixedValue > 0) {
+        markId = minFixedValue;
       }
-    }
+      if (type === SINGLE && !selectorType && markId !== valueRef.current) {
+        valueRef.current = markId;
+        onChange(markId);
+      }
+      if (selectorType === MIN && markId !== minValueRef.current) {
+        if (markId >= maxValueRef.current) {
+          const maxAllowed = getPreviousValue(maxValueRef.current, fixed);
+          minValueRef.current = maxAllowed;
+          changeCurrentMinValue(maxAllowed);
+        } else {
+          minValueRef.current = markId;
+          changeCurrentMinValue(markId);
+        }
+      }
+      if (selectorType === MAX && markId !== maxValueRef.current) {
+        if (markId <= minValueRef.current) {
+          const minAllowed = getNextValue(minValueRef.current, fixed);
+          maxValueRef.current = minAllowed;
+          changeCurrentMaxValue(minAllowed);
+        } else {
+          maxValueRef.current = markId;
+          changeCurrentMaxValue(markId);
+        }
+      }
+    } else {
+      if (markId === 0 && min > 0) {
+        markId = min;
+      }
 
-    if (selectorType === MAX && markId !== maxValueRef.current) {
-      if (markId <= minValueRef.current) {
-        const minAllowed = minValueRef.current + jump;
-        maxValueRef.current = minAllowed;
-        changeCurrentMaxValue(minAllowed);
-      } else {
-        maxValueRef.current = Number(markId);
-        changeCurrentMaxValue(Number(markId));
+      if (type === SINGLE && !selectorType && markId !== valueRef.current) {
+        valueRef.current = markId;
+        onChange(markId);
+      }
+
+      if (selectorType === MIN && markId !== minValueRef.current) {
+        if (markId >= maxValueRef.current) {
+          const maxAllowed = maxValueRef.current - jump;
+          minValueRef.current = maxAllowed;
+          changeCurrentMinValue(maxAllowed);
+        } else {
+          minValueRef.current = markId;
+          changeCurrentMinValue(markId);
+        }
+      }
+
+      if (selectorType === MAX && markId !== maxValueRef.current) {
+        if (markId <= minValueRef.current) {
+          const minAllowed = minValueRef.current + jump;
+          maxValueRef.current = minAllowed;
+          changeCurrentMaxValue(minAllowed);
+        } else {
+          maxValueRef.current = markId;
+          changeCurrentMaxValue(markId);
+        }
       }
     }
     selectorBeingDragged.current = null;
   };
 
   useEffect(() => {
-    const { min, max, jump } = values;
+    const { min, max, jump, fixed } = values;
 
-    if (min && max && jump) {
+    if (values.fixed) {
+      const minValue = fixed[0];
+      const maxValue = fixed[fixed.length - 1];
+
+      updateSelectionMarks(fixed);
+      changeCurrentMinValue(minValue);
+      minValueRef.current = minValue;
+      changeCurrentMaxValue(maxValue);
+      maxValueRef.current = maxValue;
+
+      if (type === SINGLE) {
+        onChange(fixed[0]);
+      }
+    } else if (min && max && jump) {
       const updatedMarks = [];
 
       for (let i = min; i < max; i = i + jump) {
@@ -238,13 +310,13 @@ const Range = ({
       if (type === SINGLE) {
         onChange(min);
       }
+    }
 
-      if (!listenersOn.current) {
-        addListeners();
-      } else {
-        removeListeners();
-        addListeners();
-      }
+    if (!listenersOn.current) {
+      addListeners();
+    } else {
+      removeListeners();
+      addListeners();
     }
   }, [values]);
 
@@ -270,7 +342,11 @@ const Range = ({
         />
       ) : (
         <MarkLabel
-          onClick={() => updateEditMin(minValueRef.current || currentMinValue)}
+          onClick={() =>
+            values.fixed
+              ? null
+              : updateEditMin(minValueRef.current || currentMinValue)
+          }
           type={MIN}
         >
           {type === RANGE && currentMinValue
@@ -297,6 +373,7 @@ const Range = ({
             onClick={(event) =>
               type === SINGLE ? onClickSlider(event.currentTarget.id) : null
             }
+            selector={mark === currentMaxValue ? MAX : MIN}
             type={type}
             value={mark}
           >
@@ -319,7 +396,11 @@ const Range = ({
         />
       ) : (
         <MarkLabel
-          onClick={() => updateEditMax(maxValueRef.current || currentMaxValue)}
+          onClick={() =>
+            values.fixed
+              ? null
+              : updateEditMax(maxValueRef.current || currentMaxValue)
+          }
           type={MAX}
         >
           {type === RANGE && currentMaxValue

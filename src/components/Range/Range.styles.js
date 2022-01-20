@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import DraggableLeft from "assets/images/draggable-left.jpg";
 import DraggableRight from "assets/images/draggable-right.jpg";
-import { MAX, SINGLE } from "../../constants";
+import { MAX, MIN, SINGLE } from "../../constants";
 
 export const RangeArea = styled.div`
   position: relative;
@@ -18,7 +18,6 @@ export const Slider = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid black;
   border-radius: 5px;
   height: 10px;
   width: 80%;
@@ -47,7 +46,7 @@ export const Mark = styled.div`
   &:after {
     ${markValue};
     position: absolute;
-    bottom: 4px;
+    bottom: -25px;
     color: gray;
     font-size: 0.7rem;
   }
@@ -86,25 +85,37 @@ export const Mark = styled.div`
       }
     `}
 
-  ${({ currentMax, currentMin }) =>
+  ${({ currentMax, currentMin, selector }) =>
     (currentMax || currentMin) &&
     css`
       z-index: 10;
       position: relative;
-      background-image: ${`linear-gradient(rgba(0,128,0, 0.7),rgba(0,128,0, 0.7)), url(${DraggableRight})`};
-      background-size: cover;
-      border-radius: 50%;
-      height: 15px;
-      width: 25px;
+      width: 100%;
       aspect-ratio: 1/1;
-      border: 1px solid black;
       color: green;
       cursor: grab;
-      zoom: 2;
+      background-image: linear-gradient(
+        ${currentMin ? "to right" : "to left"},
+        lightgray,
+        lightgray,
+        lightgray,
+        lightgray,
+        green,
+        green,
+        green,
+        green
+      );
 
       &:after {
-        ${markValue};
-        font-size: 1.5rem;
+        content: "";
+        position: absolute;
+        top: -6px;
+        font-size: 0.5rem;
+        height: 20px;
+        width: 20px;
+        background: darkgreen;
+        border-radius: 50%;
+        border: 1px solid black;
         position: absolute;
         bottom: -40px;
       }
