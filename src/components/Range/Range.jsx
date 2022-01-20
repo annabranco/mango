@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
 import { bool, func, number, oneOf, shape, string } from "prop-types";
-import ArrowLeft from "assets/images/arrow-left.png";
-import ArrowRight from "assets/images/arrow-right.png";
-import { BLANK_IMG, MAX, MIN, RANGE, SINGLE } from "../../constants";
-
-import { Mark, MarkInput, MarkLabel, RangeArea, Slider } from "./Range.styles";
+import { BLANK_IMG, MAX, MIN, RANGE, SINGLE } from "constants";
 import { useRefWithLabel, useStateWithLabel } from "../../utils/hooks";
+import { Mark, MarkInput, MarkLabel, RangeArea, Slider } from "./Range.styles";
 
 const Range = ({
   changeCurrentMaxValue,
@@ -303,7 +300,7 @@ const Range = ({
             type={type}
             value={mark}
           >
-            <span>_</span>
+            <span>.</span>
           </Mark>
         ))}
       </Slider>

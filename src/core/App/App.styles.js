@@ -10,7 +10,7 @@ export const MainArea = styled.main`
 MainArea.displayName = "MainArea";
 
 export const SelectionText = styled.p`
-  margin: 20px auto;
+  margin: 20px auto 40px;
   margin-left: 15vw;
   width: 100%;
   font-size: 1.4rem;

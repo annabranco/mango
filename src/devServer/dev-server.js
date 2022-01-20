@@ -12,7 +12,7 @@ import {
 } from "./exceptions";
 
 const app = express();
-const SERVER_PORT = 3051;
+const SERVER_PORT = 8081;
 const dbPath = "src/devServer/db/";
 
 app.use(cors());

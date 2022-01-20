@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
-import Range from "components/Range";
-import { MainArea, SelectionText } from "./App.styles";
-import { GlobalStyles } from "../../globals.styles";
-import { RANGE, SINGLE } from "../../constants";
-import { fetchData } from "../../utils/fetchData";
-import { useStateWithLabel } from "../../utils/hooks";
-
-const DB_URI = "http://localhost:3051";
-const dataType = "normal-range";
+import React from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import SETUP from "config/setup.js";
+import { useStateWithLabel } from "utils/hooks";
+import Home from "views/Home/Home";
+import NormalRange from "views/NormalRange/NormalRange";
+import { RANGE } from "constants";
+import { MainArea } from "./App.styles";
+import { GlobalStyles } from "globals.styles";
 
 const App = () => {
   const [currentValue, changeCurrentValue] = useStateWithLabel(
@@ -22,43 +21,37 @@ const App = () => {
     null,
     "currentMaxValue"
   );
-  const [rangeValues, updateRangeValues] = useStateWithLabel(
-    undefined,
-    "rangeValues"
-  );
-  const [rangeType, changeRangeType] = useStateWithLabel(RANGE, "rangeType");
 
-  useEffect(() => {
-    fetchData(`${DB_URI}/${dataType}`).then((response) => {
-      if (response.success) {
-        updateRangeValues(response.data);
-      } else {
-        console.error("Error when fetching data", response);
-      }
-    });
-  }, []);
+  const [rangeType, changeRangeType] = useStateWithLabel(RANGE, "rangeType");
 
   return (
     <>
       <GlobalStyles />
       <MainArea>
-        <SelectionText>
-          {rangeType === SINGLE
-            ? "Please select a value"
-            : "Please select minimum and maximum values"}
-        </SelectionText>
-        <Range
-          changeCurrentMaxValue={changeCurrentMaxValue}
-          changeCurrentMinValue={changeCurrentMinValue}
-          currentMaxValue={currentMaxValue}
-          currentMinValue={currentMinValue}
-          currentValue={currentValue}
-          displayMarks={false}
-          onChange={changeCurrentValue}
-          type={rangeType}
-          unit="€"
-          values={rangeValues}
-        />
+        <BrowserRouter>
+          <Routes>
+            <Route
+              exact
+              path="/exercise1"
+              element={
+                <NormalRange
+                  changeCurrentMaxValue={changeCurrentMaxValue}
+                  changeCurrentMinValue={changeCurrentMinValue}
+                  currentMaxValue={currentMaxValue}
+                  currentMinValue={currentMinValue}
+                  currentValue={currentValue}
+                  displayMarks={false}
+                  onChange={changeCurrentValue}
+                  rangeType={rangeType}
+                  type={rangeType}
+                  unit={SETUP.numberUnit}
+                />
+              }
+            />
+            <Route index element={<Home />} />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </BrowserRouter>
       </MainArea>
     </>
   );
