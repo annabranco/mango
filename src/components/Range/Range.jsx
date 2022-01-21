@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { bool, func, number, oneOf, shape, string } from "prop-types";
-import { BLANK_IMG, MAX, MIN, RANGE, SINGLE } from "constants";
+import { BLANK_IMG, MAX, MIN, RANGE, SINGLE } from "../../constants";
 import { useRefWithLabel, useStateWithLabel } from "../../utils/hooks";
 import { Mark, MarkInput, MarkLabel, RangeArea, Slider } from "./Range.styles";
 
@@ -14,6 +14,7 @@ const Range = ({
   onChange,
   type,
   unit,
+
   values,
 }) => {
   const [selectionMarks, updateSelectionMarks] = useStateWithLabel(
@@ -331,6 +332,7 @@ const Range = ({
       {editMin ? (
         <MarkInput
           autoFocus
+          data-test-id="range__input--min"
           defaultValue={editMin}
           min={0}
           max={maxValueRef.current || currentMaxValue}
@@ -342,6 +344,7 @@ const Range = ({
         />
       ) : (
         <MarkLabel
+          data-test-id="range__label--min"
           onClick={() =>
             values.fixed
               ? null
@@ -360,6 +363,7 @@ const Range = ({
             currentMax={type === RANGE && mark === currentMaxValue}
             currentMin={type === RANGE && mark === currentMinValue}
             currentSelection={type === SINGLE && mark === currentValue}
+            data-test-id={`range__mark--${mark}`}
             displayMarks={displayMarks}
             draggable="true"
             key={`mark-${mark}`}
@@ -371,7 +375,7 @@ const Range = ({
               mark <= currentMaxValue
             }
             onClick={(event) =>
-              type === SINGLE ? onClickSlider(event.currentTarget.id) : null
+              type === "SINGLE" ? onClickSlider(event.currentTarget.id) : null
             }
             selector={mark === currentMaxValue ? MAX : MIN}
             type={type}
@@ -384,6 +388,7 @@ const Range = ({
       {editMax ? (
         <MarkInput
           autoFocus
+          data-test-id="range__input--max"
           defaultValue={editMax}
           min={
             minValueRef.current + values.jump || currentMinValue + values.jump
@@ -396,6 +401,7 @@ const Range = ({
         />
       ) : (
         <MarkLabel
+          data-test-id="range__label--max"
           onClick={() =>
             values.fixed
               ? null

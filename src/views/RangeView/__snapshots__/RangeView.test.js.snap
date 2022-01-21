@@ -1,0 +1,533 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[RangeView] component should match the snapshot 1`] = `
+<BrowserRouter>
+  <Router
+    location={
+      Object {
+        "hash": "",
+        "key": "default",
+        "pathname": "/",
+        "search": "",
+        "state": null,
+      }
+    }
+    navigationType="POP"
+    navigator={
+      Object {
+        "action": "POP",
+        "back": [Function],
+        "block": [Function],
+        "createHref": [Function],
+        "forward": [Function],
+        "go": [Function],
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "key": "default",
+          "pathname": "/",
+          "search": "",
+          "state": null,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <RangeView
+      changeCurrentMaxValue={
+        [MockFunction] {
+          "calls": Array [
+            Array [
+              100,
+            ],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        }
+      }
+      changeCurrentMinValue={
+        [MockFunction] {
+          "calls": Array [
+            Array [
+              1,
+            ],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        }
+      }
+      currentMaxValue={100}
+      currentMinValue={1}
+      currentValue={0}
+      displayMarks={true}
+      onChange={[MockFunction]}
+      type="RANGE"
+      unit="x$"
+    >
+      <SelectionText
+        data-test-id="range__instructions"
+      >
+        <p
+          className="SelectionText-sc-1ie6sl-1 kCFrLS"
+          data-test-id="range__instructions"
+        >
+          Please select minimum and maximum values
+        </p>
+      </SelectionText>
+      <Range
+        changeCurrentMaxValue={
+          [MockFunction] {
+            "calls": Array [
+              Array [
+                100,
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          }
+        }
+        changeCurrentMinValue={
+          [MockFunction] {
+            "calls": Array [
+              Array [
+                1,
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": undefined,
+              },
+            ],
+          }
+        }
+        currentMaxValue={100}
+        currentMinValue={1}
+        currentValue={0}
+        displayMarks={true}
+        onChange={[MockFunction]}
+        type="RANGE"
+        unit="x$"
+        values={
+          Object {
+            "jump": 10,
+            "max": 100,
+            "min": 1,
+          }
+        }
+      >
+        <RangeArea>
+          <div
+            className="RangeArea-sc-tm7lds-0 fWIyKt"
+          >
+            <MarkLabel
+              data-test-id="range__label--min"
+              onClick={[Function]}
+              type="MIN"
+            >
+              <label
+                className="MarkLabel-sc-tm7lds-3 cCkhLZ"
+                data-test-id="range__label--min"
+                onClick={[Function]}
+                type="MIN"
+              >
+                1x$
+              </label>
+            </MarkLabel>
+            <Slider>
+              <div
+                className="Slider-sc-tm7lds-1 eSgOzI"
+              >
+                <Mark
+                  currentMax={false}
+                  currentMin={true}
+                  currentSelection={false}
+                  data-selectortype="MIN"
+                  data-test-id="range__mark--1"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-1"
+                  inRange={true}
+                  key="mark-1"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={1}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 heHBsW"
+                    data-selectortype="MIN"
+                    data-test-id="range__mark--1"
+                    draggable="true"
+                    id="slider-mark-1"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={1}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--10"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-10"
+                  inRange={true}
+                  key="mark-10"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={10}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 gSZgNN"
+                    data-selectortype={null}
+                    data-test-id="range__mark--10"
+                    draggable="true"
+                    id="slider-mark-10"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={10}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--20"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-20"
+                  inRange={true}
+                  key="mark-20"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={20}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 fBCBnF"
+                    data-selectortype={null}
+                    data-test-id="range__mark--20"
+                    draggable="true"
+                    id="slider-mark-20"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={20}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--30"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-30"
+                  inRange={true}
+                  key="mark-30"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={30}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 jPrEQl"
+                    data-selectortype={null}
+                    data-test-id="range__mark--30"
+                    draggable="true"
+                    id="slider-mark-30"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={30}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--40"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-40"
+                  inRange={true}
+                  key="mark-40"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={40}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 cvJbpx"
+                    data-selectortype={null}
+                    data-test-id="range__mark--40"
+                    draggable="true"
+                    id="slider-mark-40"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={40}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--50"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-50"
+                  inRange={true}
+                  key="mark-50"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={50}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 cnJBuZ"
+                    data-selectortype={null}
+                    data-test-id="range__mark--50"
+                    draggable="true"
+                    id="slider-mark-50"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={50}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--60"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-60"
+                  inRange={true}
+                  key="mark-60"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={60}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 WmVUR"
+                    data-selectortype={null}
+                    data-test-id="range__mark--60"
+                    draggable="true"
+                    id="slider-mark-60"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={60}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--70"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-70"
+                  inRange={true}
+                  key="mark-70"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={70}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 fkbZxx"
+                    data-selectortype={null}
+                    data-test-id="range__mark--70"
+                    draggable="true"
+                    id="slider-mark-70"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={70}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--80"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-80"
+                  inRange={true}
+                  key="mark-80"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={80}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 hSQSaZ"
+                    data-selectortype={null}
+                    data-test-id="range__mark--80"
+                    draggable="true"
+                    id="slider-mark-80"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={80}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={false}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype={null}
+                  data-test-id="range__mark--90"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-90"
+                  inRange={true}
+                  key="mark-90"
+                  onClick={[Function]}
+                  selector="MIN"
+                  type="RANGE"
+                  value={90}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 hKRsgB"
+                    data-selectortype={null}
+                    data-test-id="range__mark--90"
+                    draggable="true"
+                    id="slider-mark-90"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={90}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+                <Mark
+                  currentMax={true}
+                  currentMin={false}
+                  currentSelection={false}
+                  data-selectortype="MAX"
+                  data-test-id="range__mark--100"
+                  displayMarks={true}
+                  draggable="true"
+                  id="slider-mark-100"
+                  inRange={true}
+                  key="mark-100"
+                  onClick={[Function]}
+                  selector="MAX"
+                  type="RANGE"
+                  value={100}
+                >
+                  <div
+                    className="Mark-sc-tm7lds-2 gMfbut"
+                    data-selectortype="MAX"
+                    data-test-id="range__mark--100"
+                    draggable="true"
+                    id="slider-mark-100"
+                    onClick={[Function]}
+                    type="RANGE"
+                    value={100}
+                  >
+                    <span>
+                      .
+                    </span>
+                  </div>
+                </Mark>
+              </div>
+            </Slider>
+            <MarkLabel
+              data-test-id="range__label--max"
+              onClick={[Function]}
+              type="MAX"
+            >
+              <label
+                className="MarkLabel-sc-tm7lds-3 pgybS"
+                data-test-id="range__label--max"
+                onClick={[Function]}
+                type="MAX"
+              >
+                100x$
+              </label>
+            </MarkLabel>
+          </div>
+        </RangeArea>
+      </Range>
+      <BackLink
+        to="/"
+      >
+        <Link
+          className="BackLink-sc-1ie6sl-0 hiROIR"
+          to="/"
+        >
+          <a
+            className="BackLink-sc-1ie6sl-0 hiROIR"
+            href="/"
+            onClick={[Function]}
+          >
+            Back
+          </a>
+        </Link>
+      </BackLink>
+    </RangeView>
+  </Router>
+</BrowserRouter>
+`;

@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[App] component with normal values should match the snapshot 1`] = `
+<Fragment>
+  <Memo(l) />
+  <MainArea>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          element={
+            <RangeView
+              changeCurrentMaxValue={[Function]}
+              changeCurrentMinValue={[Function]}
+              currentMaxValue={100}
+              currentMinValue={1}
+              currentValue={0}
+              displayMarks={false}
+              onChange={[Function]}
+              type="SINGLE"
+              unit="€"
+            />
+          }
+          exact={true}
+          path="/exercise1"
+        />
+        <Route
+          element={
+            <RangeView
+              changeCurrentMaxValue={[Function]}
+              changeCurrentMinValue={[Function]}
+              currentMaxValue={100}
+              currentMinValue={1}
+              currentValue={0}
+              displayMarks={true}
+              onChange={[Function]}
+              type="SINGLE"
+              unit="€"
+            />
+          }
+          exact={true}
+          path="/exercise2"
+        />
+        <Route
+          element={<Home />}
+          index={true}
+        />
+        <Route
+          element={
+            <Navigate
+              to="/"
+            />
+          }
+          path="*"
+        />
+      </Routes>
+    </BrowserRouter>
+  </MainArea>
+</Fragment>
+`;

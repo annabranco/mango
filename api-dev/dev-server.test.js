@@ -7,6 +7,10 @@ import FIXED_RANGE_RESPONSE from "./db/fixed-response.json";
 const request = supertest(app);
 
 describe("Test endpoints", () => {
+  beforeEach(() => {
+    jest.spyOn(console, "debug").mockImplementation(() => {});
+  });
+
   afterAll((done) => {
     app.close();
     done();

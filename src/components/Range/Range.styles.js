@@ -1,7 +1,5 @@
 import styled, { css } from "styled-components";
-import DraggableLeft from "assets/images/draggable-left.jpg";
-import DraggableRight from "assets/images/draggable-right.jpg";
-import { MAX, MIN, SINGLE } from "../../constants";
+import { MAX, SINGLE } from "../../constants";
 
 export const RangeArea = styled.div`
   position: relative;

@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import SETUP from "config/setup.js";
-import { useStateWithLabel } from "utils/hooks";
-import Home from "views/Home/Home";
-import RangeView from "views/RangeView/RangeView";
-import { RANGE } from "constants";
+import SETUP from "../../config/setup.js";
+import { useStateWithLabel } from "../../utils/hooks";
+import Home from "../../views/Home/Home";
+import RangeView from "../../views/RangeView/RangeView";
+import { RANGE } from "../../constants";
 import { MainArea } from "./App.styles";
-import { GlobalStyles } from "globals.styles";
+import { GlobalStyles } from "../../globals.styles";
 
 const App = () => {
   const [currentValue, changeCurrentValue] = useStateWithLabel(
@@ -22,7 +22,7 @@ const App = () => {
     "currentMaxValue"
   );
 
-  const [rangeType, changeRangeType] = useStateWithLabel(RANGE, "rangeType");
+  const [rangeType, changeRangeType] = useStateWithLabel("SINGLE", "rangeType");
 
   return (
     <>

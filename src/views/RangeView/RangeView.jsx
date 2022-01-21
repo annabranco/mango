@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { bool, func, number, oneOf, string } from "prop-types";
-import SETUP from "config/setup.js";
-import { fetchData } from "utils/fetchData";
-import { useStateWithLabel } from "utils/hooks";
-import Range from "components/Range";
-import { RANGE, SINGLE } from "constants";
-import { BackLink, SelectionText } from "./RangeView.styles";
 import { useLocation } from "react-router-dom";
+import { bool, func, number, oneOf, string } from "prop-types";
+import SETUP from "../../config/setup.js";
+import { fetchData } from "../../utils/fetchData";
+import { useStateWithLabel } from "../../utils/hooks";
+import Range from "../../components/Range";
+import { RANGE, SINGLE } from "../../constants";
+import { BackLink, SelectionText } from "./RangeView.styles";
 
 const RangeView = ({
   changeCurrentMaxValue,
@@ -34,7 +34,7 @@ const RangeView = ({
         if (response.success) {
           updateRangeValues(response.data);
         } else {
-          console.error("Error when fetching data", response);
+          console.warn("Error when fetching data", response);
         }
       })
       .catch((error) => {});
@@ -42,7 +42,7 @@ const RangeView = ({
 
   return (
     <>
-      <SelectionText>
+      <SelectionText data-test-id="range__instructions">
         {type === SINGLE
           ? "Please select a value"
           : "Please select minimum and maximum values"}
@@ -59,6 +59,11 @@ const RangeView = ({
         unit={unit}
         values={rangeValues}
       />
+      {type === SINGLE && (
+        <SelectionText data-test-id="range__currentValue--display">
+          {`Value selected: ${currentValue}${unit}`}
+        </SelectionText>
+      )}
       <BackLink to="/">Back</BackLink>
     </>
   );
