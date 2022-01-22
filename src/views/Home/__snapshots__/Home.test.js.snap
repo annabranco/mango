@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[Home] component with normal values should match the snapshot 1`] = `
+<HomeWrapper>
+  <HomeText>
+    Please select exercise:
+  </HomeText>
+  <HomeLink
+    to="exercise1"
+  >
+    Exercise 1
+  </HomeLink>
+  <HomeLink
+    to="exercise2"
+  >
+    Exercise 2
+  </HomeLink>
+</HomeWrapper>
+`;

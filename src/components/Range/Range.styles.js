@@ -1,31 +1,5 @@
 import styled, { css } from "styled-components";
-import DraggableLeft from "assets/images/draggable-left.jpg";
-import DraggableRight from "assets/images/draggable-right.jpg";
-import { MAX, MIN, SINGLE } from "../../constants";
-
-export const RangeArea = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 90%;
-`;
-RangeArea.displayName = "RangeArea";
-
-export const Slider = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 5px;
-  height: 10px;
-  width: 80%;
-  padding: 0;
-  background: lightgray;
-  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
-`;
-Slider.displayName = "Slider";
+import { MAX, SINGLE } from "../../constants";
 
 const markValue = css`
   content: "${({ displayMarks, value }) => (displayMarks ? value : null)}";
@@ -131,6 +105,15 @@ export const Mark = styled.div`
 `;
 Mark.displayName = "Mark";
 
+export const MarkInput = styled.input`
+  position: relative;
+  margin: 0 10px;
+  font-size: 1.2rem;
+  border: 0;
+  width: 60px;
+`;
+MarkInput.displayName = "MarkInput";
+
 export const MarkLabel = styled.label`
   margin: 0 10px;
   font-size: 1.2rem;
@@ -145,11 +128,26 @@ export const MarkLabel = styled.label`
 `;
 MarkLabel.displayName = "MarkLabel";
 
-export const MarkInput = styled.input`
+export const RangeArea = styled.div`
   position: relative;
-  margin: 0 10px;
-  font-size: 1.2rem;
-  border: 0;
-  width: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
 `;
-MarkInput.displayName = "MarkInput";
+RangeArea.displayName = "RangeArea";
+
+export const Slider = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 5px;
+  height: 10px;
+  width: 80%;
+  padding: 0;
+  background: lightgray;
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.5);
+`;
+Slider.displayName = "Slider";

@@ -13,7 +13,7 @@ import {
 
 const app = express();
 const SERVER_PORT = 8081;
-const dbPath = "src/devServer/db/";
+const dbPath = "api-dev/db/";
 
 app.use(cors());
 
@@ -83,7 +83,7 @@ app.use((error, req, res, next) => {
   return res.status(error.cause).json(errorResponse);
 });
 
-http.createServer(app).listen(SERVER_PORT, () => {
+module.exports = http.createServer(app).listen(SERVER_PORT, () => {
   console.debug(
     `[INFO] Development server started at ${SERVER_PORT} | ${new Date()}`
   );

@@ -1,27 +1,26 @@
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import SETUP from "config/setup.js";
-import { useStateWithLabel } from "utils/hooks";
-import Home from "views/Home/Home";
-import RangeView from "views/RangeView/RangeView";
-import { RANGE } from "constants";
+import SETUP from "../../config/setup.js";
+import { useStateWithLabel } from "../../utils/hooks";
+import Home from "../../views/Home/Home";
+import RangeView from "../../views/RangeView/RangeView";
+import { RANGE } from "../../constants";
+import { GlobalStyles } from "../../globals.styles";
 import { MainArea } from "./App.styles";
-import { GlobalStyles } from "globals.styles";
 
 const App = () => {
-  const [currentValue, changeCurrentValue] = useStateWithLabel(
+  const [currentMaxValue, changeCurrentMaxValue] = useStateWithLabel(
     undefined,
-    "currentValue"
+    "currentMaxValue"
   );
   const [currentMinValue, changeCurrentMinValue] = useStateWithLabel(
     undefined,
     "currentMinValue"
   );
-  const [currentMaxValue, changeCurrentMaxValue] = useStateWithLabel(
+  const [currentValue, changeCurrentValue] = useStateWithLabel(
     undefined,
-    "currentMaxValue"
+    "currentValue"
   );
-
   const [rangeType, changeRangeType] = useStateWithLabel(RANGE, "rangeType");
 
   return (

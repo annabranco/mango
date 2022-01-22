@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { bool, func, number, oneOf, shape, string } from "prop-types";
-import { BLANK_IMG, MAX, MIN, RANGE, SINGLE } from "constants";
+import { BLANK_IMG, MAX, MIN, RANGE, SINGLE } from "../../constants";
 import { useRefWithLabel, useStateWithLabel } from "../../utils/hooks";
 import { Mark, MarkInput, MarkLabel, RangeArea, Slider } from "./Range.styles";
 
@@ -16,18 +16,18 @@ const Range = ({
   unit,
   values,
 }) => {
+  const [editMax, updateEditMax] = useStateWithLabel(null, "editMax");
+  const [editMin, updateEditMin] = useStateWithLabel(null, "editMin");
   const [selectionMarks, updateSelectionMarks] = useStateWithLabel(
     [],
     "selectionMarks"
   );
-  const [editMin, updateEditMin] = useStateWithLabel(null, "editMin");
-  const [editMax, updateEditMax] = useStateWithLabel(null, "editMax");
 
-  const valueRef = useRefWithLabel(null, "valueRef");
-  const minValueRef = useRefWithLabel(values.min, "minValueRef");
-  const maxValueRef = useRefWithLabel(values.max, "maxValueRef");
   const listenersOn = useRefWithLabel(null, "listenersOn");
+  const maxValueRef = useRefWithLabel(values.max, "maxValueRef");
+  const minValueRef = useRefWithLabel(values.min, "minValueRef");
   const selectorBeingDragged = useRefWithLabel(null, "selectorBeingDragged");
+  const valueRef = useRefWithLabel(null, "valueRef");
 
   //-- Logics for SINGLE value
   const onClickSlider = (id) => {
@@ -86,8 +86,8 @@ const Range = ({
 
   const roundValue = (valueToCheck, inputType) => {
     const { jump, max, min } = values;
-    const minValue = minValueRef.current || min;
-    const maxValue = maxValueRef.current || max;
+    const minValue = minValueRef.current;
+    const maxValue = maxValueRef.current;
 
     if (valueToCheck >= maxValue) {
       if (inputType === MIN) {
@@ -103,7 +103,7 @@ const Range = ({
     }
     if (valueToCheck % jump !== 0) {
       const correctedValue = valueToCheck - (valueToCheck % jump);
-      if (correctedValue < min) {
+      if (correctedValue <= min) {
         return min;
       }
       return correctedValue;
@@ -331,21 +331,23 @@ const Range = ({
       {editMin ? (
         <MarkInput
           autoFocus
+          data-test-id="range__input--min"
           defaultValue={editMin}
+          list={selectionMarks}
+          max={maxValueRef.current}
           min={0}
-          max={maxValueRef.current || currentMaxValue}
           onBlur={() => onConfirmInputChange(MIN)}
           onChange={(event) => onChangeInput(MIN, event.target.value)}
           step={values.jump}
-          list={selectionMarks}
           type="number"
         />
       ) : (
         <MarkLabel
+          data-test-id="range__label--min"
           onClick={() =>
-            values.fixed
+            values.fixed || type === SINGLE
               ? null
-              : updateEditMin(minValueRef.current || currentMinValue)
+              : updateEditMin(minValueRef.current)
           }
           type={MIN}
         >
@@ -360,18 +362,19 @@ const Range = ({
             currentMax={type === RANGE && mark === currentMaxValue}
             currentMin={type === RANGE && mark === currentMinValue}
             currentSelection={type === SINGLE && mark === currentValue}
+            data-selectortype={getSelectorType(mark)}
+            data-test-id={`range__mark--${mark}`}
             displayMarks={displayMarks}
             draggable="true"
-            key={`mark-${mark}`}
             id={`slider-mark-${mark}`}
-            data-selectortype={getSelectorType(mark)}
             inRange={
               type === RANGE &&
               mark >= currentMinValue &&
               mark <= currentMaxValue
             }
+            key={`mark-${mark}`}
             onClick={(event) =>
-              type === SINGLE ? onClickSlider(event.currentTarget.id) : null
+              type === "SINGLE" ? onClickSlider(event.currentTarget.id) : null
             }
             selector={mark === currentMaxValue ? MAX : MIN}
             type={type}
@@ -384,22 +387,22 @@ const Range = ({
       {editMax ? (
         <MarkInput
           autoFocus
+          data-test-id="range__input--max"
           defaultValue={editMax}
-          min={
-            minValueRef.current + values.jump || currentMinValue + values.jump
-          }
           max={values.max}
-          onBlur={() => onConfirmInputChange(MAX)}
+          min={minValueRef.current + values.jump}
           onChange={(event) => onChangeInput(MAX, event.target.value)}
+          onBlur={() => onConfirmInputChange(MAX)}
           step={values.jump}
           type="number"
         />
       ) : (
         <MarkLabel
+          data-test-id="range__label--max"
           onClick={() =>
-            values.fixed
+            values.fixed || type === SINGLE
               ? null
-              : updateEditMax(maxValueRef.current || currentMaxValue)
+              : updateEditMax(maxValueRef.current)
           }
           type={MAX}
         >
