@@ -66,9 +66,9 @@ The server will be up on the port 8081 and it will only accept GET calls
 {
   "success": true,
     "data": {
-      "min": 1: number,
-      "max": 100: number,
-      "jump": 10: number
+      "min": 1,
+      "max": 100,
+      "jump": 10
     }
 }
 ```
@@ -79,7 +79,7 @@ The server will be up on the port 8081 and it will only accept GET calls
 {
   "success": true,
     "data": {
-      "fixed": [ 1: number, 2: number, 3: number ]
+      "fixed": [ 1, 2, 3 ]
     }
 }
 ```
@@ -96,7 +96,7 @@ Request errors are responded with an object of error and a key success set to fa
   "error_code": 404,
   "error": "Not Found",
   "message": "The requested resource cannot be found."
-};
+}
 ```
 
 ## Using the \<Range> component
