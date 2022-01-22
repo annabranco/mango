@@ -14,7 +14,6 @@ const Range = ({
   onChange,
   type,
   unit,
-
   values,
 }) => {
   const [selectionMarks, updateSelectionMarks] = useStateWithLabel(
@@ -87,8 +86,8 @@ const Range = ({
 
   const roundValue = (valueToCheck, inputType) => {
     const { jump, max, min } = values;
-    const minValue = minValueRef.current || min;
-    const maxValue = maxValueRef.current || max;
+    const minValue = minValueRef.current;
+    const maxValue = maxValueRef.current;
 
     if (valueToCheck >= maxValue) {
       if (inputType === MIN) {
@@ -104,7 +103,7 @@ const Range = ({
     }
     if (valueToCheck % jump !== 0) {
       const correctedValue = valueToCheck - (valueToCheck % jump);
-      if (correctedValue < min) {
+      if (correctedValue <= min) {
         return min;
       }
       return correctedValue;
@@ -335,7 +334,7 @@ const Range = ({
           data-test-id="range__input--min"
           defaultValue={editMin}
           min={0}
-          max={maxValueRef.current || currentMaxValue}
+          max={maxValueRef.current}
           onBlur={() => onConfirmInputChange(MIN)}
           onChange={(event) => onChangeInput(MIN, event.target.value)}
           step={values.jump}
@@ -346,9 +345,9 @@ const Range = ({
         <MarkLabel
           data-test-id="range__label--min"
           onClick={() =>
-            values.fixed
+            values.fixed || type === SINGLE
               ? null
-              : updateEditMin(minValueRef.current || currentMinValue)
+              : updateEditMin(minValueRef.current)
           }
           type={MIN}
         >
@@ -390,9 +389,7 @@ const Range = ({
           autoFocus
           data-test-id="range__input--max"
           defaultValue={editMax}
-          min={
-            minValueRef.current + values.jump || currentMinValue + values.jump
-          }
+          min={minValueRef.current + values.jump}
           max={values.max}
           onBlur={() => onConfirmInputChange(MAX)}
           onChange={(event) => onChangeInput(MAX, event.target.value)}
@@ -403,9 +400,9 @@ const Range = ({
         <MarkLabel
           data-test-id="range__label--max"
           onClick={() =>
-            values.fixed
+            values.fixed || type === SINGLE
               ? null
-              : updateEditMax(maxValueRef.current || currentMaxValue)
+              : updateEditMax(maxValueRef.current)
           }
           type={MAX}
         >

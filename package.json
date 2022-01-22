@@ -11,7 +11,7 @@
     "start:dev-server": "babel-node ./api-dev/dev-server",
     "start:dev-wait-server": "wait-on http://localhost:8081/health && npm start",
     "test": "cross-env NODE_ENV=test jest --coverage",
-    "test:dev": "cross-env NODE_ENV=test jest --watch"
+    "test:dev": "cross-env NODE_ENV=test jest --coverage --watch"
   },
   "license": "ISC",
   "dependencies": {

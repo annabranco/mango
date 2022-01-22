@@ -342,7 +342,7 @@ exports[`[Range] component with fixed values should match the snapshot 1`] = `
     }
   }
   type="SINGLE"
-  unit="x$"
+  unit={null}
   values={
     Object {
       "fixed": Array [
@@ -369,7 +369,7 @@ exports[`[Range] component with fixed values should match the snapshot 1`] = `
           onClick={[Function]}
           type="MIN"
         >
-          undefinedx$
+          undefined
         </label>
       </MarkLabel>
       <Slider>
@@ -513,7 +513,7 @@ exports[`[Range] component with fixed values should match the snapshot 1`] = `
           onClick={[Function]}
           type="MAX"
         >
-          undefinedx$
+          undefined
         </label>
       </MarkLabel>
     </div>
