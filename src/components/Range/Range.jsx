@@ -16,18 +16,18 @@ const Range = ({
   unit,
   values,
 }) => {
+  const [editMax, updateEditMax] = useStateWithLabel(null, "editMax");
+  const [editMin, updateEditMin] = useStateWithLabel(null, "editMin");
   const [selectionMarks, updateSelectionMarks] = useStateWithLabel(
     [],
     "selectionMarks"
   );
-  const [editMin, updateEditMin] = useStateWithLabel(null, "editMin");
-  const [editMax, updateEditMax] = useStateWithLabel(null, "editMax");
 
-  const valueRef = useRefWithLabel(null, "valueRef");
-  const minValueRef = useRefWithLabel(values.min, "minValueRef");
-  const maxValueRef = useRefWithLabel(values.max, "maxValueRef");
   const listenersOn = useRefWithLabel(null, "listenersOn");
+  const maxValueRef = useRefWithLabel(values.max, "maxValueRef");
+  const minValueRef = useRefWithLabel(values.min, "minValueRef");
   const selectorBeingDragged = useRefWithLabel(null, "selectorBeingDragged");
+  const valueRef = useRefWithLabel(null, "valueRef");
 
   //-- Logics for SINGLE value
   const onClickSlider = (id) => {
@@ -333,12 +333,12 @@ const Range = ({
           autoFocus
           data-test-id="range__input--min"
           defaultValue={editMin}
-          min={0}
+          list={selectionMarks}
           max={maxValueRef.current}
+          min={0}
           onBlur={() => onConfirmInputChange(MIN)}
           onChange={(event) => onChangeInput(MIN, event.target.value)}
           step={values.jump}
-          list={selectionMarks}
           type="number"
         />
       ) : (
@@ -362,17 +362,17 @@ const Range = ({
             currentMax={type === RANGE && mark === currentMaxValue}
             currentMin={type === RANGE && mark === currentMinValue}
             currentSelection={type === SINGLE && mark === currentValue}
+            data-selectortype={getSelectorType(mark)}
             data-test-id={`range__mark--${mark}`}
             displayMarks={displayMarks}
             draggable="true"
-            key={`mark-${mark}`}
             id={`slider-mark-${mark}`}
-            data-selectortype={getSelectorType(mark)}
             inRange={
               type === RANGE &&
               mark >= currentMinValue &&
               mark <= currentMaxValue
             }
+            key={`mark-${mark}`}
             onClick={(event) =>
               type === "SINGLE" ? onClickSlider(event.currentTarget.id) : null
             }
@@ -389,10 +389,10 @@ const Range = ({
           autoFocus
           data-test-id="range__input--max"
           defaultValue={editMax}
-          min={minValueRef.current + values.jump}
           max={values.max}
-          onBlur={() => onConfirmInputChange(MAX)}
+          min={minValueRef.current + values.jump}
           onChange={(event) => onChangeInput(MAX, event.target.value)}
+          onBlur={() => onConfirmInputChange(MAX)}
           step={values.jump}
           type="number"
         />

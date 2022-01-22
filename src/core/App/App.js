@@ -5,24 +5,23 @@ import { useStateWithLabel } from "../../utils/hooks";
 import Home from "../../views/Home/Home";
 import RangeView from "../../views/RangeView/RangeView";
 import { RANGE } from "../../constants";
-import { MainArea } from "./App.styles";
 import { GlobalStyles } from "../../globals.styles";
+import { MainArea } from "./App.styles";
 
 const App = () => {
-  const [currentValue, changeCurrentValue] = useStateWithLabel(
+  const [currentMaxValue, changeCurrentMaxValue] = useStateWithLabel(
     undefined,
-    "currentValue"
+    "currentMaxValue"
   );
   const [currentMinValue, changeCurrentMinValue] = useStateWithLabel(
     undefined,
     "currentMinValue"
   );
-  const [currentMaxValue, changeCurrentMaxValue] = useStateWithLabel(
+  const [currentValue, changeCurrentValue] = useStateWithLabel(
     undefined,
-    "currentMaxValue"
+    "currentValue"
   );
-
-  const [rangeType, changeRangeType] = useStateWithLabel("SINGLE", "rangeType");
+  const [rangeType, changeRangeType] = useStateWithLabel(RANGE, "rangeType");
 
   return (
     <>

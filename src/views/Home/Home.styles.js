@@ -1,22 +1,5 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-
-export const HomeWrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 50px;
-`;
-HomeWrapper.displayName = "HomeWrapper";
-
-export const HomeText = styled.p`
-  margin-bottom: 50px;
-  font-size: 1.15rem;
-  font-weight: 400;
-  font-style: italic;
-`;
-HomeText.displayName = "HomeText";
+import { Link } from "react-router-dom";
 
 export const HomeLink = styled(Link)`
   margin: 20px auto;
@@ -32,3 +15,20 @@ export const HomeLink = styled(Link)`
   }
 `;
 HomeLink.displayName = "HomeLink";
+
+export const HomeText = styled.p`
+  margin-bottom: 50px;
+  font-size: 1.15rem;
+  font-weight: 400;
+  font-style: italic;
+`;
+HomeText.displayName = "HomeText";
+
+export const HomeWrapper = styled.main`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+`;
+HomeWrapper.displayName = "HomeWrapper";

@@ -20,7 +20,6 @@ const RangeView = ({
   unit,
 }) => {
   const location = useLocation();
-
   const [rangeValues, updateRangeValues] = useStateWithLabel(
     undefined,
     "rangeValues"
