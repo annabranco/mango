@@ -34,7 +34,7 @@ Start normal mode with the following command
 
 `$ yarn start`
 
-On normal mode, the local server will not be started. The app will try to reach the local server, and if it not running, no errors will occur and the app will run with default values.
+On normal mode, the local server will not be started. The app will try to reach the local server, and if it is not running, no errors will be thrown and the app will run with default values.
 
 ## Running tests
 
@@ -123,9 +123,9 @@ The \<Range> component was made to be reusable and easily adapted to other proje
 
 > a number that is returned only when the Range component is running with a SINGLE type. It returns the current value selected by the user and its value should be changed on the parent component through the onChange callback
 
-- **displayMarks**
+- **hideMarks**
 
-> a boolean that displays or hides the labels of the points that can be selected by the user on the slider
+> a boolean that hides or displaus the labels of the mark labels of the points that can be selected by the user on the slider
 
 - **onChange**
 
@@ -135,13 +135,13 @@ The \<Range> component was made to be reusable and easily adapted to other proje
 
 > a string that defined the type of selection that the user can make. It can be "SINGLE" for a single value or "RANGE" for selecting a minimum and a maximum value
 
-- **unit**
+- **unit** (optional)
 
 > a string representing a visual sign of an unit that would be displayed beside the values' labels. For example "€"
 
 - **values**
 
-> An object feeding the values that should be displayed on the slider. It could be of fixed or normal types.
+> An object setting the parameters that should feed slider. It could be of fixed or normal types (see below).
 
 ### Interface of fixed object
 
