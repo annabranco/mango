@@ -166,6 +166,14 @@ const Range = ({
     fixedArray[fixedArray.findIndex((value) => value === comparedValue) + 1];
 
   const onDragOver = (event) => {
+    const { id: markId } = event?.target || {};
+
+    event.preventDefault();
+
+    if (!markId) {
+      return;
+    }
+
     useDebounceInterval(() => {
       const { jump, max, min, fixed: fixedValues } = values;
       const minValue =
@@ -174,11 +182,6 @@ const Range = ({
         maxValueRef.current ||
         (fixedValues ? fixedValues[fixedValues.length - 1] : max);
       const markValue = Number(event.target.id.replace("slider-mark-", ""));
-
-      if (!event.target.id) {
-        return;
-      }
-      event.preventDefault();
 
       if (fixedValues) {
         const minFixedValue = fixedValues[0];
@@ -224,15 +227,16 @@ const Range = ({
   };
 
   const onFinishDragging = (event) => {
-    const selectorType = event.dataTransfer.getData("text");
-    const { min, jump, fixed: fixedValues } = values;
     let markId = Number(event.target.id.replace("slider-mark-", ""));
 
     event.preventDefault();
 
-    if (!event.target.id) {
+    if (!markId) {
       return;
     }
+
+    const selectorType = event.dataTransfer.getData("text");
+    const { min, jump, fixed: fixedValues } = values;
 
     if (fixedValues) {
       const minFixedValue = fixedValues[0];

@@ -101,7 +101,9 @@ Request errors are responded with an object of error and a key success set to fa
 
 ## Using the \<Range> component
 
-The \<Range> component was made to be reusable and easily adapted to other projects needs. It is fed with the following props:
+The \<Range> component was made to be reusable and easily adapted to other projects needs. Given some limitations of its implementation, to correct use the slider you should click, drag and drop over the slider bar. If you move the pointer outside of it, the movement will be ignored.
+
+The \<Range> component is fed with the following props:
 
 - **changeCurrentMaxValue**
 
