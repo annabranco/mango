@@ -2,6 +2,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const webpack = require("webpack");
 const path = require("path");
+const SERVICES_URL = require("./src/config/api-endpoints");
+
+const isDevelopment = process.env.NODE_ENV !== "production";
 
 module.exports = {
   entry: path.resolve(__dirname, "./src/index.js"),
@@ -12,6 +15,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+    }),
+    new webpack.DefinePlugin({
+      SERVER_URL: JSON.stringify(SERVICES_URL[isDevelopment ? "dev" : "pro"]),
     }),
   ],
   resolve: {

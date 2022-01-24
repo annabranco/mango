@@ -1,28 +1,17 @@
+/* global SERVER_URL */
+
 import React from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import SETUP from "../../config/setup.js";
-import { useStateWithLabel } from "../../utils/hooks";
+
+import { fetchData } from "../../utils/fetchData.js";
 import Home from "../../views/Home/Home";
 import RangeView from "../../views/RangeView/RangeView";
 import { RANGE } from "../../constants";
+
 import { GlobalStyles } from "../../globals.styles";
 import { MainArea } from "./App.styles";
 
 const App = () => {
-  const [currentMaxValue, changeCurrentMaxValue] = useStateWithLabel(
-    undefined,
-    "currentMaxValue"
-  );
-  const [currentMinValue, changeCurrentMinValue] = useStateWithLabel(
-    undefined,
-    "currentMinValue"
-  );
-  const [currentValue, changeCurrentValue] = useStateWithLabel(
-    undefined,
-    "currentValue"
-  );
-  const [rangeType, changeRangeType] = useStateWithLabel(RANGE, "rangeType");
-
   return (
     <>
       <GlobalStyles />
@@ -34,15 +23,10 @@ const App = () => {
               path="/exercise1"
               element={
                 <RangeView
-                  changeCurrentMaxValue={changeCurrentMaxValue}
-                  changeCurrentMinValue={changeCurrentMinValue}
-                  currentMaxValue={currentMaxValue}
-                  currentMinValue={currentMinValue}
-                  currentValue={currentValue}
-                  displayMarks={false}
-                  onChange={changeCurrentValue}
-                  type={rangeType}
-                  unit={SETUP.numberUnit}
+                  getValues={fetchData(`${SERVER_URL}/normal-range`)}
+                  hideMarks
+                  type={RANGE}
+                  unit="€"
                 />
               }
             />
@@ -51,15 +35,9 @@ const App = () => {
               path="/exercise2"
               element={
                 <RangeView
-                  changeCurrentMaxValue={changeCurrentMaxValue}
-                  changeCurrentMinValue={changeCurrentMinValue}
-                  currentMaxValue={currentMaxValue}
-                  currentMinValue={currentMinValue}
-                  currentValue={currentValue}
-                  displayMarks={true}
-                  onChange={changeCurrentValue}
-                  type={rangeType}
-                  unit={SETUP.numberUnit}
+                  getValues={fetchData(`${SERVER_URL}/fixed-range`)}
+                  type={RANGE}
+                  unit="€"
                 />
               }
             />

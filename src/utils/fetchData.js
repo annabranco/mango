@@ -1,7 +1,12 @@
-export const fetchData = (uri) =>
+export const fetchData = (uri) => (callback) => {
   fetch(uri)
     .then((response) => response.json())
-    .then((data) => data)
-    .catch((error) =>
-      console.warn(`Failed to fetch data from ${uri}. Using default values.`)
-    );
+    .then((jsonResponse) => {
+      if (jsonResponse.success) {
+        callback(jsonResponse.data);
+      } else {
+        console.warn(`Failed to fetch data from ${uri}. Using default values.`);
+      }
+    })
+    .catch((error) => {});
+};

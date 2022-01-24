@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { MAX, SINGLE } from "../../constants";
 
 const markValue = css`
-  content: "${({ displayMarks, value }) => (displayMarks ? value : null)}";
+  content: "${({ hideMarks, value }) => (hideMarks ? null : value)}";
 `;
 
 export const Mark = styled.div`
@@ -80,7 +80,7 @@ export const Mark = styled.div`
         green
       );
 
-      &:after {
+      &:before {
         content: "";
         position: absolute;
         top: -6px;
@@ -92,6 +92,12 @@ export const Mark = styled.div`
         border: 1px solid black;
         position: absolute;
         bottom: -40px;
+      }
+
+      &:after {
+        ${markValue};
+        position: absolute;
+        bottom: -25px;
       }
     `}
 
@@ -124,6 +130,12 @@ export const MarkLabel = styled.label`
     type === MAX &&
     css`
       text-align: left;
+    `}
+
+  ${({ clickable }) =>
+    clickable &&
+    css`
+      cursor: pointer;
     `}
 `;
 MarkLabel.displayName = "MarkLabel";
